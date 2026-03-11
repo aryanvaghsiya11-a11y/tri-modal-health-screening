@@ -1,0 +1,15 @@
+venv310/
+.venv/
+__pycache__/
+*.log
+uploads/*
+static/gradcam_*.jpg
+.gemini/
+.agents/
+.agent/
+_agents/
+_agent/
+*.pdf
+fake_color.jpg
+fake_gray.jpg
+!uploads/.gitkeep
