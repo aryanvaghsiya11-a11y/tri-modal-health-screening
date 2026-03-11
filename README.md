@@ -2,6 +2,8 @@
 
 A Tri-Modal AI architecture designed for advanced healthcare diagnostics, specifically engineered to predict lung **"Infiltration"**. This system maximizes precision and recall by fusing three distinct data modalities into a single, robust Regularized Fusion Network.
 
+![image alt](https://github.com/aryanvaghsiya11-a11y/tri-modal-health-screening/blob/de87d462ab0fb634ce36197b81c683ab9a79b9a3/try-model-decription-image.jpg)
+
 ## 🧠 Architecture Overview
 
 This project leverages a multi-input stacking ensemble approach to provide comprehensive medical predictions:
