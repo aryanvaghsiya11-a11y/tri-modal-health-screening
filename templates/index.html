@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tri-Modal Health Screening System</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(19, 127, 236, 0.5);
+            box-shadow: 0 0 15px 2px rgba(19, 127, 236, 0.8);
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+    <!-- Top Navigation Bar -->
+    <header
+        class="sticky top-0 z-50 w-full bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 h-16 relative flex items-center justify-between">
+            <nav class="hidden md:flex items-center gap-8">
+                <a class="text-sm font-medium text-primary flex items-center gap-1.5" href="#">
+                    <span class="material-symbols-outlined text-lg">dashboard</span> Dashboard
+                </a>
+                <a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5"
+                    href="#">
+                    <span class="material-symbols-outlined text-lg">groups</span> Patient Records
+                </a>
+                <a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5"
+                    href="#">
+                    <span class="material-symbols-outlined text-lg">history</span> Analysis History
+                </a>
+            </nav>
+
+            <!-- Centered Logo -->
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-4">
+                <div class="bg-primary p-1.5 rounded-lg text-white">
+                    <span class="material-symbols-outlined text-2xl">health_metrics</span>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white leading-none">Tri-Modal
+                        AI</h1>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold mt-1">Health Screening
+                        System</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 ml-auto">
+                <div class="relative hidden sm:block">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                    <input
+                        class="pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-full text-sm focus:ring-2 focus:ring-primary w-64"
+                        placeholder="Search Patients..." type="text" />
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Column 1: Patient Data Input -->
+            <section class="space-y-6">
+                <div
+                    class="bg-white dark:bg-background-dark/50 rounded-xl shadow-md border border-slate-200 dark:border-slate-800 p-6">
+                    <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">clinical_notes</span>
+                        Patient Modalities &amp; Vitals
+                    </h2>
+                    <div class="space-y-6">
+                        <!-- File Upload -->
+                        <div>
+                            <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Chest X-Ray Image
+                            </p>
+                            <div id="uploadContainer"
+                                class="relative group cursor-pointer border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-4 hover:border-primary transition-colors bg-slate-50/50 dark:bg-slate-900/30 overflow-hidden">
+                                <input type="file" id="imageInput" accept="image/*"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+
+                                <div id="uploadPlaceholder" class="flex flex-col items-center justify-center py-4">
+                                    <span
+                                        class="material-symbols-outlined text-4xl text-slate-400 group-hover:text-primary mb-2">cloud_upload</span>
+                                    <p class="text-xs text-slate-500 text-center px-4">Drag and drop or click to upload
+                                        DICOM/JPG</p>
+                                </div>
+
+                                <div id="imagePreviewContainer"
+                                    class="mt-4 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800 bg-black hidden">
+                                    <img id="imagePreview" class="w-full h-40 object-cover opacity-80"
+                                        alt="Uploaded chest X-ray preview" src="" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Metadata -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Gender</label>
+                                <select
+                                    class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-primary focus:border-primary">
+                                    <option>Select</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Age</label>
+                                <input
+                                    id="ageInputVal"
+                                    class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-primary focus:border-primary"
+                                    placeholder="Years" type="number" />
+                            </div>
+                        </div>
+                        <!-- Vitals -->
+                        <div class="space-y-4">
+                            <p
+                                class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 pb-1">
+                                Vitals</p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Heart
+                                        Rate (BPM)</label>
+                                    <div class="relative">
+                                        <input
+                                            id="hrInputVal"
+                                            class="w-full pl-3 pr-10 py-2 rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-primary"
+                                            placeholder="72" type="number" />
+                                        <span
+                                            class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-red-500 text-sm">favorite</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">SpO2
+                                        (%)</label>
+                                    <div class="relative">
+                                        <input
+                                            id="spo2InputVal"
+                                            class="w-full pl-3 pr-10 py-2 rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-primary transition-all border-2"
+                                            placeholder="98" type="number" min="0" max="100" />
+                                        <span
+                                            id="spo2Icon"
+                                            class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-blue-500 text-sm transition-colors">air</span>
+                                    </div>
+                                    <p id="spo2Error" class="text-[10px] text-red-500 font-bold mt-1 hidden">Max 100% allowed</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Action Button -->
+                        <button id="runAnalysisBtn"
+                            class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2 group">
+                            <span
+                                class="material-symbols-outlined group-hover:rotate-12 transition-transform">auto_awesome</span>
+                            <span>Run Tri-Modal Analysis</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <!-- Column 2: AI Visual Explanation -->
+            <section class="space-y-6">
+                <div
+                    class="bg-white dark:bg-background-dark/50 rounded-xl shadow-md border border-slate-200 dark:border-slate-800 p-6 flex flex-col h-full relative">
+                    <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">visibility</span>
+                        Grad-CAM Feature Map
+                    </h2>
+
+                    <div id="placeholderVisual"
+                        class="flex-grow flex flex-col items-center justify-center text-slate-400">
+                        <span class="material-symbols-outlined text-6xl mb-4 opacity-50">image_not_supported</span>
+                        <p class="text-sm font-medium text-center">Awaiting Analysis...</p>
+                        <p class="text-xs mt-1 text-center opacity-75">Upload patient data and run analysis to view the
+                            feature map.</p>
+                    </div>
+
+                    <div id="errorVisual" class="hidden flex-grow flex-col items-center justify-center text-red-500 p-8 text-center bg-red-50/80 rounded-2xl border border-red-100">
+                        <span class="material-symbols-outlined text-5xl mb-3">error</span>
+                        <p class="text-sm font-bold text-red-700">Analysis Halted</p>
+                        <p id="errorTextVisual" class="text-xs mt-2 text-red-600 font-medium">Please check the image format.</p>
+                    </div>
+
+                    <div id="resultsVisual" class="hidden flex-col h-full">
+                        <div
+                            class="relative flex-grow rounded-xl overflow-hidden bg-slate-900 border border-slate-800 min-h-[250px]">
+                            <!-- Heatmap Overlay Effect using Gradient -->
+                            <div class="absolute inset-0 z-10 mix-blend-overlay opacity-80 pointer-events-none"
+                                style="background: radial-gradient(circle at 40% 45%, rgba(239, 68, 68, 0.9) 0%, rgba(239, 68, 68, 0.4) 30%, transparent 60%), radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.6) 0%, transparent 50%);">
+                            </div>
+                            <img class="w-full h-full object-cover"
+                                data-alt="Medical chest x-ray with AI heatmap highlight"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEistdZaNAFk2q-TpQjbo_K16VvLZ8CXm_Umt1dlznElfy6i1ytbu51Vyi-Srizl-07GUxw9ViR0jQhQaBmOgENg6MwFFuSIwLcDLVYOvW8nK8dk2AoRqFafXAXBUSSwB4DcJnibDoOo833HzvTVO3zbAtcJUXcucopOuZGHyCCb5VbNbYpUiBWmxwXDT2W74J6Wy7HjiBtsOHTJ76Ry_AmnkNbatQ0-E2ziqpJCQIQ2P2fxZaZ2865YqoJkoFU7pMjdQFoBgT8EA" />
+                            <!-- Scanning Line Indicator -->
+                            <div class="scan-line" style="top: 40%"></div>
+                            <!-- AI Analysis Status -->
+                            <div
+                                class="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-2">
+                                <span class="flex h-2 w-2 relative">
+                                    <span
+                                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                                </span>
+                                <span class="text-[10px] font-bold text-white uppercase tracking-widest">Processing
+                                    Layer 4...</span>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <div
+                                class="flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-3">
+                                <span>Visual Attention Legend</span>
+                                <span class="text-slate-400">Confidence: 0.94</span>
+                            </div>
+                            <div
+                                class="h-2 w-full rounded-full bg-gradient-to-r from-blue-500 via-yellow-400 to-red-500 mb-2">
+                            </div>
+                            <div class="flex justify-between text-xs text-slate-600 dark:text-slate-400">
+                                <span>Blue = Low Attention</span>
+                                <span>Red = High Attention</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Column 3: Clinical Decision & Summary -->
+            <section class="space-y-6">
+                <div
+                    class="bg-white dark:bg-background-dark/50 rounded-xl shadow-md border border-slate-200 dark:border-slate-800 p-6 flex flex-col h-full relative">
+                    <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">assignment_turned_in</span>
+                        Screening Results
+                    </h2>
+
+                    <div id="placeholderData"
+                        class="flex-grow flex flex-col items-center justify-center text-slate-400">
+                        <span class="material-symbols-outlined text-6xl mb-4 opacity-50">data_usage</span>
+                        <p class="text-sm font-medium text-center">Awaiting Analysis...</p>
+                        <p class="text-xs mt-1 text-center opacity-75">Upload patient data and run analysis to view the
+                            prediction report.</p>
+                    </div>
+
+                    <div id="errorData" class="hidden flex-grow flex-col items-center justify-center text-amber-600 p-8 text-center bg-amber-50/80 rounded-2xl border border-amber-100">
+                        <span class="material-symbols-outlined text-5xl mb-3">warning</span>
+                        <p class="text-sm font-bold text-amber-800">Validation Error</p>
+                        <p id="errorTextData" class="text-xs mt-2 text-amber-700 font-medium">Could not generate screening report. Check inputs.</p>
+                    </div>
+
+                    <div id="resultsData" class="hidden flex-col h-full">
+                        <!-- Warning Prediction Banner -->
+                        <div
+                            class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mb-6 flex items-center gap-4">
+                            <div class="bg-amber-500 text-white rounded-lg p-2">
+                                <span class="material-symbols-outlined text-2xl">warning</span>
+                            </div>
+                            <div>
+                                <p
+                                    class="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest">
+                                    Model Prediction</p>
+                                <h3 class="text-lg font-bold text-amber-900 dark:text-amber-100">Infiltration Detected
+                                </h3>
+                            </div>
+                        </div>
+                        <!-- Confidence Score -->
+                        <div class="mb-8">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Confidence
+                                    Score</span>
+                                <span class="text-2xl font-bold text-primary">87%</span>
+                            </div>
+                            <div class="h-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-primary rounded-full transition-all duration-1000"
+                                    style="width: 87%"></div>
+                            </div>
+                        </div>
+                        <!-- Patient Summary -->
+                        <div class="space-y-4 mb-8">
+                            <p
+                                class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 pb-1">
+                                Patient Context</p>
+                            <div class="grid grid-cols-2 gap-y-3">
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] text-slate-500 uppercase font-semibold">Age</span>
+                                    <span class="text-sm font-medium">54 Years</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] text-slate-500 uppercase font-semibold">Gender</span>
+                                    <span class="text-sm font-medium">Male</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] text-slate-500 uppercase font-semibold">Heart Rate</span>
+                                    <span class="text-sm font-medium">78 BPM</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] text-slate-500 uppercase font-semibold">SpO2 Level</span>
+                                    <span class="text-sm font-medium">96 %</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Ensemble Breakdown -->
+                        <div class="space-y-4 mb-8">
+                            <p
+                                class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 pb-1">
+                                Ensemble Model Breakdown</p>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-600 dark:text-slate-400">XGBoost (Tabular)</span>
+                                        <span class="font-bold">92%</span>
+                                    </div>
+                                    <div class="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full">
+                                        <div class="h-full bg-primary/60 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-600 dark:text-slate-400">Neural Network (Vision)</span>
+                                        <span class="font-bold">84%</span>
+                                    </div>
+                                    <div class="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full">
+                                        <div class="h-full bg-primary/60 rounded-full" style="width: 84%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-600 dark:text-slate-400">Meta-Learner Fusion</span>
+                                        <span class="font-bold">87%</span>
+                                    </div>
+                                    <div class="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full">
+                                        <div class="h-full bg-primary rounded-full" style="width: 87%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Action Button -->
+                        <button id="downloadReportBtn"
+                            class="w-full border-2 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined">download</span>
+                            Download Full Report
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer class="max-w-7xl mx-auto px-4 py-6 border-t border-slate-200 dark:border-slate-800 mt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-slate-500">© 2024 Tri-Modal Health AI • For professional medical use only.</p>
+            <div class="flex items-center gap-6">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span> System Operational
+                </span>
+                <span class="text-xs text-slate-500">v2.4.0 (Fusion Core)</span>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        document.getElementById('runAnalysisBtn').addEventListener('click', function () {
+            const btn = this;
+            const oText = btn.innerHTML;
+
+            // Function to show inline error message
+            function showInlineError(msg) {
+                btn.innerHTML = oText;
+                btn.disabled = false;
+
+                // Hide results and placeholders
+                document.getElementById('resultsVisual').classList.add('hidden');
+                document.getElementById('resultsVisual').classList.remove('flex');
+                document.getElementById('placeholderVisual').classList.add('hidden');
+                
+                document.getElementById('resultsData').classList.add('hidden');
+                document.getElementById('resultsData').classList.remove('flex');
+                document.getElementById('placeholderData').classList.add('hidden');
+
+                // Show error containers
+                const errVis = document.getElementById('errorVisual');
+                errVis.classList.remove('hidden');
+                errVis.classList.add('flex');
+                document.getElementById('errorTextVisual').innerText = msg;
+
+                const errData = document.getElementById('errorData');
+                errData.classList.remove('hidden');
+                errData.classList.add('flex');
+                document.getElementById('errorTextData').innerText = msg;
+            }
+
+            // Show loading state on button
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> <span>Processing...</span>';
+            btn.disabled = true;
+
+            // Hide placeholders and show skeleton/processing state for results section ONLY
+            document.getElementById('placeholderVisual').classList.add('hidden');
+            document.getElementById('placeholderData').classList.add('hidden');
+            
+            // Also hide any previous inline errors
+            document.getElementById('errorVisual').classList.add('hidden');
+            document.getElementById('errorVisual').classList.remove('flex');
+            document.getElementById('errorData').classList.add('hidden');
+            document.getElementById('errorData').classList.remove('flex');
+
+            // Prepare Form Data
+            const formData = new FormData();
+            
+            if (imageInput.files.length > 0) {
+                formData.append('chest_xray', imageInput.files[0]);
+            } else {
+                showInlineError('Please upload a chest X-Ray image first.');
+                return;
+            }
+
+            // In a real app we'd get these from actual select/input fields
+            // using the inputs present in the markup
+            const genderSelect = document.querySelector('select');
+            const ageInput = document.getElementById('ageInputVal');
+            const hrInput = document.getElementById('hrInputVal');
+            const spo2Input = document.getElementById('spo2InputVal');
+            
+            if (genderSelect.value === 'Select' || !ageInput.value || !hrInput.value || !spo2Input.value) {
+                showInlineError('Please fill out all patient details (Gender, Age, Heart Rate, and SpO2) before running the analysis.');
+                return;
+            }
+
+            if (parseFloat(spo2Input.value) > 100) {
+                showInlineError('Invalid SpO2 Level: Oxygen saturation cannot exceed 100%. Please correct the clinical data.');
+                return;
+            }
+
+            formData.append('gender', genderSelect.value);
+            formData.append('age', ageInput.value);
+            formData.append('heart_rate', hrInput.value);
+            formData.append('spo2', spo2Input.value);
+            formData.append('view_pos', 'PA'); // default
+            formData.append('follow_up', '0'); // default
+            
+            // Execute API request
+            fetch('/api/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Update Warning Prediction Banner
+                    const predH3 = document.querySelector('#resultsData h3');
+                    predH3.innerText = data.prediction;
+                    
+                    const scoreEl = document.querySelector('#resultsData .text-2xl.font-bold');
+                    scoreEl.innerText = `${data.confidence_score_overall}%`;
+                    
+                    const scoreBar = document.querySelector('#resultsData .h-full.bg-primary.transition-all');
+                    scoreBar.style.width = `${data.confidence_score_overall}%`;
+                    
+                    // Update Context Display
+                    const contextSpans = document.querySelectorAll('#resultsData .text-sm.font-medium');
+                    if (contextSpans.length >= 4) {
+                        contextSpans[0].innerText = `${data.patient_context.age || 'N/A'} Years`;
+                        contextSpans[1].innerText = data.patient_context.gender || 'N/A';
+                        contextSpans[2].innerText = `${data.patient_context.heart_rate || 'N/A'} BPM`;
+                        contextSpans[3].innerText = `${data.patient_context.spo2 || 'N/A'} %`;
+                    }
+                    
+                    // Update Ensemble Breakdown
+                    const breakdownH3s = document.querySelectorAll('#resultsData .space-y-3 .font-bold');
+                    const breakdownBars = document.querySelectorAll('#resultsData .space-y-3 .bg-primary\\/60, #resultsData .space-y-3 .h-full.bg-primary.rounded-full');
+                    if (breakdownH3s.length >= 3 && data.ensemble_breakdown) {
+                        breakdownH3s[0].innerText = `${data.ensemble_breakdown.xgboost_tabular}%`;
+                        breakdownBars[0].style.width = `${data.ensemble_breakdown.xgboost_tabular}%`;
+                        
+                        breakdownH3s[1].innerText = `${data.ensemble_breakdown.neural_network_vision}%`;
+                        breakdownBars[1].style.width = `${data.ensemble_breakdown.neural_network_vision}%`;
+                        
+                        breakdownH3s[2].innerText = `${data.ensemble_breakdown.meta_learner_fusion}%`;
+                        breakdownBars[2].style.width = `${data.ensemble_breakdown.meta_learner_fusion}%`;
+                    }
+                    
+                    // Update GradCAM Image
+                    if (data.gradcam_url) {
+                        const imgEl = document.querySelector('#resultsVisual img');
+                        imgEl.src = data.gradcam_url + "?t=" + new Date().getTime(); // prevent cache
+                        
+                        // We also store gradcam_path to send to download_report later
+                        window.latestGradcamPath = data.gradcam_path; 
+                        window.latestPrediction = data;
+                    }
+
+                    document.getElementById('resultsVisual').classList.remove('hidden');
+                    document.getElementById('resultsVisual').classList.add('flex');
+
+                    document.getElementById('resultsData').classList.remove('hidden');
+                    document.getElementById('resultsData').classList.add('flex');
+                    
+                    btn.innerHTML = oText;
+                    btn.disabled = false;
+                } else {
+                    showInlineError('API Error: ' + data.error);
+                }
+            })
+            .catch(err => {
+                console.error("Prediction Error:", err);
+                showInlineError("An unexpected communication error occurred during analysis.");
+            });
+        });
+
+        // Image Upload Logic
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+
+        imageInput.addEventListener('change', function (e) {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                    imagePreviewContainer.classList.remove('hidden');
+                    uploadPlaceholder.classList.add('hidden');
+                }
+
+                reader.readAsDataURL(this.files[0]); // read the file as Data URL
+            }
+        });
+
+
+        // Real-time SpO2 Validation
+        const spo2InputVal = document.getElementById('spo2InputVal');
+        const spo2Error = document.getElementById('spo2Error');
+        const spo2Icon = document.getElementById('spo2Icon');
+
+        spo2InputVal.addEventListener('input', function() {
+            const val = parseFloat(this.value);
+            if (val > 100) {
+                this.classList.add('border-red-500', 'ring-red-500', 'text-red-500', 'bg-red-50');
+                this.classList.remove('border-slate-200', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-800');
+                spo2Error.classList.remove('hidden');
+                spo2Icon.classList.add('text-red-600');
+                spo2Icon.classList.remove('text-blue-500');
+            } else {
+                this.classList.remove('border-red-500', 'ring-red-500', 'text-red-500', 'bg-red-50');
+                this.classList.add('border-slate-200', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-800');
+                spo2Error.classList.add('hidden');
+                spo2Icon.classList.remove('text-red-600');
+                spo2Icon.classList.add('text-blue-500');
+            }
+        });
+
+        // Download Report Logic
+        document.getElementById('downloadReportBtn').addEventListener('click', function () {
+            const predData = window.latestPrediction;
+            
+            const payload = {
+                age: predData ? predData.patient_context.age : "54",
+                gender: predData ? predData.patient_context.gender : "Male",
+                heart_rate: predData ? predData.patient_context.heart_rate : "78",
+                spo2: predData ? predData.patient_context.spo2 : "96",
+                prediction: predData ? predData.prediction : "Infiltration Detected",
+                confidence: predData ? predData.confidence_score_overall : "87",
+                gradcam_path: window.latestGradcamPath || ""
+            };
+
+            fetch('/api/download_report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'patient_screening_report.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(err => console.error("Error downloading report:", err));
+        });
+    </script>
+</body>
+
+</html>
