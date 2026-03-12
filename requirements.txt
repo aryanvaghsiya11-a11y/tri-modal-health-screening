@@ -8,14 +8,16 @@ scikit-learn>=1.2.0
 imbalanced-learn>=0.10.0  # Required for SMOTE
 
 # Data Processing & Computer Vision
-opencv-python>=4.7.0      # For Chest X-ray preprocessing
-pandas>=1.5.0             # For Tabular Metadata processing
+opencv-python-headless>=4.7.0  # Headless for Docker (no GUI)
+pandas>=1.5.0
 numpy>=1.23.0
 
 # Data Visualization & Evaluation
-matplotlib>=3.6.0         # For F1-Optimized Threshold graphs
-seaborn>=0.12.0           # For confusion matrices
+matplotlib>=3.6.0
+seaborn>=0.12.0
 
-# Notebook Environment
-jupyter>=1.0.0
-ipykernel>=6.0.0
+# Web Framework & Server
+flask>=2.3.0
+gunicorn>=21.2.0
+fpdf2>=2.7.0
+joblib>=1.3.0

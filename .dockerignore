@@ -1,0 +1,14 @@
+.git
+__pycache__
+*.pyc
+*.pyo
+*.ipynb
+*.ipynb_checkpoints
+.env
+venv/
+env/
+uploads/
+test_*.py
+extract_code.py
+tri-modal-stripped.py
+samples/
