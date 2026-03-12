@@ -1,12 +1,3 @@
----
-title: Tri-Modal Health Screening
-emoji: 🩺
-colorFrom: blue
-colorTo: green
-sdk: docker
-app_port: 7860
----
-
 # Tri-Modal Health Screening System 🩺
 
 A Tri-Modal AI architecture designed for advanced healthcare diagnostics, specifically engineered to predict lung **"Infiltration"**. This system maximizes precision and recall by fusing three distinct data modalities into a single, robust Regularized Fusion Network.
